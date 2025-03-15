@@ -17,7 +17,7 @@ public class Stack<E> implements AbstractStack<E> {
     @Override
     public void push(E element) {
         Node<E> newNode = new Node<>(element);
-        newNode.previous = this.top;
+        newNode.next = this.top;
         this.top = newNode;
         this.size++;
     }
@@ -27,7 +27,7 @@ public class Stack<E> implements AbstractStack<E> {
         ensureNonEmpty();
         E elementToReturn = this.top.element;
 
-        this.top = this.top.previous;
+        this.top = this.top.next;
         this.size--;
 
         return elementToReturn;
@@ -65,7 +65,7 @@ public class Stack<E> implements AbstractStack<E> {
                     throw new NoSuchElementException("No such element.");
                 }
                 E element = current.element;
-                this.current = this.current.previous;
+                this.current = this.current.next;
                 return element;
             }
         };
@@ -79,13 +79,11 @@ public class Stack<E> implements AbstractStack<E> {
 
     private static class Node<E> {
         private Node<E> next;
-        private Node<E> previous;
-        private E element;
+        private final E element;
 
         public Node(E element) {
             this.element = element;
             this.next = null;
-            this.previous = null;
         }
     }
 }
