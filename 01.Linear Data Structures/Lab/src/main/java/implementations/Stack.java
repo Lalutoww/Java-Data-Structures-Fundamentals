@@ -3,36 +3,89 @@ package implementations;
 import interfaces.AbstractStack;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Stack<E> implements AbstractStack<E> {
+    private Node<E> top;
+    private int size;
+
+    public Stack() {
+        this.top = null;
+        this.size = 0;
+    }
 
     @Override
     public void push(E element) {
-
+        Node<E> newNode = new Node<>(element);
+        newNode.previous = this.top;
+        this.top = newNode;
+        this.size++;
     }
 
     @Override
     public E pop() {
-        return null;
+        ensureNonEmpty();
+        E elementToReturn = this.top.element;
+
+        this.top = this.top.previous;
+        this.size--;
+
+        return elementToReturn;
     }
 
     @Override
     public E peek() {
-        return null;
+        ensureNonEmpty();
+        return this.top.element;
     }
 
     @Override
     public int size() {
-        return 0;
+        return this.size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return this.size == 0;
     }
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new Iterator<E>() {
+            private Node<E> current = top;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public E next() {
+                if (current == null) {
+                    throw new NoSuchElementException("No such element.");
+                }
+                E element = current.element;
+                this.current = this.current.previous;
+                return element;
+            }
+        };
+    }
+
+    private void ensureNonEmpty() {
+        if (isEmpty()) {
+            throw new IllegalStateException("There are no elements in the stack");
+        }
+    }
+
+    private static class Node<E> {
+        private Node<E> next;
+        private Node<E> previous;
+        private E element;
+
+        public Node(E element) {
+            this.element = element;
+            this.next = null;
+            this.previous = null;
+        }
     }
 }
